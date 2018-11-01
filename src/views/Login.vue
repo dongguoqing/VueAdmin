@@ -16,15 +16,15 @@
 </template>
 
 <script>
-  import { requestLogin } from '../api/api';
+  import { requestLogin } from '../api/user';
   //import NProgress from 'nprogress'
   export default {
     data() {
       return {
         logining: false,
         ruleForm2: {
-          account: 'admin',
-          checkPass: '123456'
+          account: '',
+          checkPass: ''
         },
         rules2: {
           account: [
@@ -53,17 +53,16 @@
             var loginParams = { username: this.ruleForm2.account, password: this.ruleForm2.checkPass };
             requestLogin(loginParams).then(data => {
               this.logining = false;
-              //NProgress.done();
-              let { msg, code, user } = data;
-              if (code !== 200) {
+              if(data.data.StatusText=='登录成功！'){
+                sessionStorage.setItem('user', JSON.stringify(data.data));
+                this.$router.push({ path: '/table' });
+              }else{
                 this.$message({
-                  message: msg,
+                  message: data.data.StatusText,
                   type: 'error'
                 });
-              } else {
-                sessionStorage.setItem('user', JSON.stringify(user));
-                this.$router.push({ path: '/table' });
               }
+              NProgress.done();
             });
           } else {
             console.log('error submit!!');

@@ -107,7 +107,7 @@
 <script>
 	import util from '../../common/js/util'
 	//import NProgress from 'nprogress'
-	import { getUserListPage, removeUser, batchRemoveUser, editUser, addUser } from '../../api/api';
+	import { getUserListPage, removeUser, batchRemoveUser, editUser, addUser } from '../../api/user';
 
 	export default {
 		data() {
@@ -168,8 +168,9 @@
 			//获取用户列表
 			getUsers() {
 				let para = {
-					page: this.page,
-					name: this.filters.name
+					pageIndex: this.page,
+					pageSize:10,
+					//name: this.filters.name
 				};
 				this.listLoading = true;
 				//NProgress.start();

@@ -29,12 +29,13 @@ router.beforeEach((to, from, next) => {
   if (to.path == '/login') {
     sessionStorage.removeItem('user');
   }
-  let user = JSON.parse(sessionStorage.getItem('user'));
-  if (!user && to.path != '/login') {
-    next({ path: '/login' })
-  } else {
-    next()
-  }
+  next()
+  // let user = JSON.parse(sessionStorage.getItem('user'));
+  // if (!user && to.path != '/login') {
+  //   next({ path: '/login' })
+  // } else {
+  //   next()
+  // }
 })
 
 //router.afterEach(transition => {
