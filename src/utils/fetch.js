@@ -1,9 +1,6 @@
 import axios from 'axios';
 import vue from 'vue';
-import qs from 'qs';
-// import router from '../router';
 
-vue.prototype.$qs = qs
 //修改默认的地址为http://192.168.1.47:5000
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 // 创建axios实例
@@ -31,11 +28,14 @@ service.interceptors.response.use(
     response => response,
     error => {
         console.log('err' + error);// for debug
-        vue.$Message.error({
-            message: error.message,
-            duration: 5 * 1000,
-            closable: true
-        });
+        if (error.response.status == 401) {
+           location.href = '/#login'
+        } else
+            vue.$Message.error({
+                message: error.message,
+                duration: 5 * 1000,
+                closable: true
+            });
         return Promise.reject(error);
     }
 )

@@ -17,15 +17,35 @@ export const requestLogin = params => {
 export const getUserListPage = params => {
     return fetch({
         url: '/LoginService/User/GetUserList',
-        method: 'post',
+        method: 'get',
         params
     });
 }
 
-export const removeUser = params => { return axios.get(`${base}/user/remove`, { params: params }); };
+export const removeUser = params => {
+    return fetch({
+        url: '/LoginService/User/GetUserList',
+        method: 'get',
+        params
+    });
+};
 
 export const batchRemoveUser = params => { return axios.get(`${base}/user/batchremove`, { params: params }); };
 
-export const editUser = params => { return axios.get(`${base}/user/edit`, { params: params }); };
+//编辑用户
+export  function editUser(data) {
+    return fetch({
+        url: '/LoginService/User/EditUser',
+        method: 'post',
+        data
+    })
+}
 
-export const addUser = params => { return axios.get(`${base}/user/add`, { params: params }); };
+//新增用户
+export const addUser = params => {
+    return fetch({
+        url: '/LoginService/User/AddUser',
+        method: 'post',
+        params
+    })
+}
