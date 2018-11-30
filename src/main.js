@@ -16,6 +16,8 @@ Vue.use(ElementUI)
 Vue.use(VueRouter)
 Vue.use(Vuex)
 
+
+
 const router = new VueRouter({
   routes
 })

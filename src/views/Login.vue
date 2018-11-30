@@ -69,7 +69,7 @@ export default {
               });
             }
             NProgress.done();
-          });
+          })
         } else {
           console.log("error submit!!");
           return false;

@@ -10,7 +10,7 @@
 		<el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
 			<el-form :inline="true" :model="filters">
 				<el-form-item>
-					<el-input v-model="filters.name" placeholder="姓名"></el-input>
+					<el-input v-model="filters.name"></el-input>
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" v-on:click="getUsers">查询</el-button>
@@ -43,7 +43,7 @@
 			</el-table-column>
 			<el-table-column prop="F_DutyId" label="岗位" :formatter="formatDuty" width="140" sortable>
 			</el-table-column>
-			<el-table-column prop="F_CreatorTime" label="创建时间" min-width="180" sortable>
+			<el-table-column prop="F_CreatorTime" label="创建时间" :formatter="formatTime" min-width="180" sortable>
 			</el-table-column>
 			<el-table-column label="操作" width="150">
 				<template scope="scope">
@@ -56,7 +56,7 @@
 		<!--工具条-->
 		<el-col :span="24" class="toolbar">
 			<el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
-			<el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:right;">
+			<el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total" style="float:right;">
 			</el-pagination>
 		</el-col>
 
@@ -121,21 +121,6 @@
 						<el-option v-for="item in enables" size="mini" :key="item.labels" :label="item.labels" :value="item.value"></el-option>
 					</el-select>
 				</el-form-item>
-				<!-- <el-form-item label="性别">
-					<el-radio-group v-model="editForm.sex">
-						<el-radio class="radio" :label="1">男</el-radio>
-						<el-radio class="radio" :label="0">女</el-radio>
-					</el-radio-group>
-				</el-form-item>
-				<el-form-item label="年龄">
-					<el-input-number v-model="editForm.age" :min="0" :max="200"></el-input-number>
-				</el-form-item>
-				<el-form-item label="生日">
-					<el-date-picker type="date" placeholder="选择日期" v-model="editForm.birth"></el-date-picker>
-				</el-form-item>
-				<el-form-item label="地址">
-					<el-input type="textarea" v-model="editForm.addr"></el-input>
-				</el-form-item> -->
 			</el-form>
 			<div slot="footer" class="dialog-footer">
 				<el-button @click.native="editFormVisible = false">取消</el-button>
@@ -144,25 +129,65 @@
 		</el-dialog>
 
 		<!--新增界面-->
-		<el-dialog title="新增" v-model="addFormVisible" :close-on-click-modal="false" width="1%">
-			<el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
-				<el-form-item label="姓名" prop="name">
-					<el-input v-model="addForm.name" auto-complete="off"></el-input>
+		<el-dialog title="新增" v-model="addFormVisible" custom-class="myDialog" :close-on-click-modal="false" width="1%">
+			<el-form :model="addForm" :inline="true" class="demo-form-inline" label-width="80px" :rules="addFormRules" ref="addForm">
+
+				<el-form-item label="账户" label-width="80px" prop="F_Account">
+					<el-input style="width:217px" v-model="addForm.F_Account" auto-complete="off"></el-input>
 				</el-form-item>
-				<el-form-item label="性别">
-					<el-radio-group v-model="addForm.sex">
-						<el-radio class="radio" :label="1">男</el-radio>
-						<el-radio class="radio" :label="0">女</el-radio>
-					</el-radio-group>
+				<el-form-item label="密码" label-width="80px" prop="F_UserPassword">
+					<el-input style="width:217px" v-model="addForm.F_UserPassword" auto-complete="off"></el-input>
 				</el-form-item>
-				<el-form-item label="年龄">
-					<el-input-number v-model="addForm.age" :min="0" :max="200"></el-input-number>
+				<el-form-item label="公司" label-width="80px" prop="company">
+					<el-select v-model="addForm.F_OrganizeId" placeholder="请选择">
+						<el-option v-for="item in companys" size="mini" :key="item.F_FullName" :label="item.F_FullName" :value="item.F_Id"></el-option>
+					</el-select>
 				</el-form-item>
-				<el-form-item label="生日">
-					<el-date-picker type="date" placeholder="选择日期" v-model="addForm.birth"></el-date-picker>
+				<el-form-item label="部门" label-width="80px" prop="dept">
+					<!-- <el-input v-model="editForm.name" auto-complete="off"></el-input> -->
+					<el-select v-model="addForm.F_DepartmentId" placeholder="请选择">
+						<el-option v-for="item in depts" size="mini" :key="item.F_FullName" :label="item.F_FullName" :value="item.F_Id"></el-option>
+					</el-select>
 				</el-form-item>
-				<el-form-item label="地址">
-					<el-input type="textarea" v-model="addForm.addr"></el-input>
+				<el-form-item label="角色" label-width="80px" prop="F_RoleId">
+					<el-select v-model="addForm.F_RoleId" placeholder="请选择">
+						<el-option v-for="item in roles" size="mini" :key="item.F_FullName" :label="item.F_FullName" :value="item.F_Id"></el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="岗位" label-width="80px" prop="duty">
+					<el-select v-model="addForm.F_DutyId" placeholder="请选择">
+						<el-option v-for="item in dutys" size="mini" :key="item.F_FullName" :label="item.F_FullName" :value="item.F_Id"></el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="姓名" label-width="80px" prop="F_RealName">
+					<el-input style="width:217px" v-model="addForm.F_RealName" auto-complete="off"></el-input>
+				</el-form-item>
+				<el-form-item label="性别" label-width="80px" prop="F_Gender">
+					<el-select v-model="addForm.F_Gender" placeholder="请选择">
+						<el-option v-for="item in sexArray" size="mini" :key="item.labels" :label="item.labels" :value="item.value"></el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="手机" label-width="80px" prop="F_MobilePhone">
+					<el-input style="width:217px" v-model="addForm.F_MobilePhone" auto-complete="off"></el-input>
+				</el-form-item>
+				<el-form-item label="生日" label-width="80px" prop="F_Birthday">
+					<el-date-picker style="width:217px" v-model="addForm.F_Birthday" type="date" placeholder="选择日期"></el-date-picker>
+				</el-form-item>
+				<el-form-item label="微信" label-width="80px" prop="F_WeChat">
+					<el-input style="width:217px" v-model="addForm.F_WeChat" auto-complete="off"></el-input>
+				</el-form-item>
+				<el-form-item label="邮箱" label-width="80px" prop="F_Email">
+					<el-input style="width:217px" v-model="addForm.F_Email" auto-complete="off"></el-input>
+				</el-form-item>
+				<el-form-item label="类型" label-width="80px" prop="F_IsAdministrator">
+					<el-select v-model="addForm.F_IsAdministrator" placeholder="请选择">
+						<el-option v-for="item in isAdministrator" size="mini" :key="item.labels" :label="item.labels" :value="item.value"></el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="允许登录" label-width="80px" prop="F_EnabledMark">
+					<el-select v-model="addForm.F_EnabledMark" placeholder="请选择">
+						<el-option v-for="item in enables" size="mini" :key="item.labels" :label="item.labels" :value="item.value"></el-option>
+					</el-select>
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
@@ -181,7 +206,8 @@ import {
   removeUser,
   batchRemoveUser,
   editUser,
-  addUser
+  addUser,
+  getUserListByWhere
 } from "../../api/user";
 import { getDeptList, getCompanyList, getDutyList } from "../../api/role";
 
@@ -196,6 +222,7 @@ export default {
       companys: [], //公司
       dutys: [], //岗位
       roles: [], //角色
+      listDutysAndRoles: [],
       //允许登录
       enables: [{ value: true, labels: "是" }, { value: false, labels: "否" }],
       //类型
@@ -240,11 +267,19 @@ export default {
       },
       //新增界面数据
       addForm: {
-        name: "",
-        sex: -1,
-        age: 0,
-        birth: "",
-        addr: ""
+        F_Account: "",
+        F_RealName: "",
+        F_Gender: "",
+        F_Birthday: "",
+        F_MobilePhone: "",
+        F_Email: "",
+        F_WeChat: "",
+        F_OrganizeId: "",
+        F_DepartmentId: "",
+        F_RoleId: "",
+        F_DutyId: "",
+        F_EnabledMark: "",
+        F_UserPassword: ""
       }
     };
   },
@@ -258,10 +293,12 @@ export default {
     //获取岗位列表和角色列表
     getDutyList() {
       getDutyList().then(response => {
-        let data = response.data;
-        for (var prop in data) {
-          if (data[prop].F_Category == 2) this.dutys.push(data[prop]);
-          else if (data[prop].F_Category == 1) this.roles.push(data[prop]);
+        this.listDutysAndRoles = response.data;
+        for (var prop in this.listDutysAndRoles) {
+          if (this.listDutysAndRoles[prop].F_Category == 2)
+            this.dutys.push(this.listDutysAndRoles[prop]);
+          else if (this.listDutysAndRoles[prop].F_Category == 1)
+            this.roles.push(this.listDutysAndRoles[prop]);
         }
       });
     },
@@ -271,9 +308,15 @@ export default {
         this.companys = response.data;
       });
     },
+    //时间显示转换
+    formatTime: function(row, column) {
+      return util.formatDate.format(new Date(row.F_CreatorTime), "yyyy-MM-dd");
+    },
     //性别显示转换
     formatSex: function(row, column) {
-      return row.F_Gender == true ? "男" : row.sex == false ? "女" : "未知";
+      return row.F_Gender == true
+        ? "男"
+        : row.F_Gender == false ? "女" : "未知";
     },
     //公司显示转换
     formatCompany(row, column) {
@@ -285,7 +328,7 @@ export default {
     //岗位显示转换
     formatDuty: function(row, column) {
       if (row.F_DutyId) {
-        let duty = this.dutys[row.F_DutyId];
+        let duty = this.listDutysAndRoles[row.F_DutyId];
         return duty != undefined ? duty.F_FullName : "";
       } else return "";
     },
@@ -306,19 +349,33 @@ export default {
     },
     //获取用户列表
     getUsers() {
-      let para = {
-        pageIndex: this.page,
-        pageSize: 10
-        //name: this.filters.name
-      };
-      this.listLoading = true;
-      //NProgress.start();
-      getUserListPage(para).then(res => {
-        this.total = res.data.Count;
-        this.users = res.data.Items;
-        this.listLoading = false;
-        //NProgress.done();
-      });
+      if (this.filters.name == "") {
+        let para = {
+          pageIndex: this.page,
+          pageSize: 10
+          //name: this.filters.name
+        };
+        this.listLoading = true;
+        //NProgress.start();
+        getUserListPage(para).then(res => {
+          this.total = res.data.Count;
+          this.users = res.data.Items;
+          this.listLoading = false;
+          //NProgress.done();
+        });
+      } else {
+        let para = {
+          pageIndex: this.page,
+          pageSize: 10,
+          keyword: this.filters.name
+        };
+        this.listLoading = true;
+        getUserListByWhere(para).then(res => {
+          this.total = res.data.Count;
+          this.users = res.data.Items;
+          this.listLoading = false;
+        });
+      }
     },
     //删除
     handleDel: function(index, row) {
@@ -328,7 +385,7 @@ export default {
         .then(() => {
           this.listLoading = true;
           //NProgress.start();
-          let para = { id: row.id };
+          let para = { Id: row.F_Id };
           removeUser(para).then(res => {
             this.listLoading = false;
             //NProgress.done();
@@ -351,11 +408,19 @@ export default {
     handleAdd: function() {
       this.addFormVisible = true;
       this.addForm = {
-        name: "",
-        sex: -1,
-        age: 0,
-        birth: "",
-        addr: ""
+        F_Account: "",
+        F_RealName: "",
+        F_Gender: "",
+        F_Birthday: "",
+        F_MobilePhone: "",
+        F_Email: "",
+        F_WeChat: "",
+        F_OrganizeId: "",
+        F_DepartmentId: "",
+        F_RoleId: "",
+        F_DutyId: "",
+        F_EnabledMark: "",
+        F_UserPassword: ""
       };
     },
     //编辑
@@ -366,10 +431,13 @@ export default {
             this.editLoading = true;
             //NProgress.start();
             let para = Object.assign({}, this.editForm);
-            para.birth =
-              !para.birth || para.birth == ""
+            para.F_Birthday =
+              !para.F_Birthday || para.F_Birthday == ""
                 ? ""
-                : util.formatDate.format(new Date(para.birth), "yyyy-MM-dd");
+                : util.formatDate.format(
+                    new Date(para.F_Birthday),
+                    "yyyy-MM-dd"
+                  );
             editUser(para).then(res => {
               this.editLoading = false;
               //NProgress.done();
@@ -393,10 +461,13 @@ export default {
             this.addLoading = true;
             //NProgress.start();
             let para = Object.assign({}, this.addForm);
-            para.birth =
-              !para.birth || para.birth == ""
+            para.F_Birthday =
+              !para.F_Birthday || para.F_Birthday == ""
                 ? ""
-                : util.formatDate.format(new Date(para.birth), "yyyy-MM-dd");
+                : util.formatDate.format(
+                    new Date(para.F_Birthday),
+                    "yyyy-MM-dd"
+                  );
             addUser(para).then(res => {
               this.addLoading = false;
               //NProgress.done();
@@ -413,11 +484,12 @@ export default {
       });
     },
     selsChange: function(sels) {
+		debugger
       this.sels = sels;
     },
     //批量删除
     batchRemove: function() {
-      var ids = this.sels.map(item => item.id).toString();
+      var ids = this.sels.map(item => item.F_Id).toString();
       this.$confirm("确认删除选中记录吗？", "提示", {
         type: "warning"
       })

@@ -5,7 +5,6 @@ import  getters from './getters'
 import Cookies from 'js-cookie';
 import user from './modules/user';
 
-
 Vue.use(Vuex)
 
 

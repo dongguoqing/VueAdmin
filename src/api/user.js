@@ -22,18 +22,35 @@ export const getUserListPage = params => {
     });
 }
 
+//根据条件筛选用户列表
+export const getUserListByWhere = params => {
+    return fetch({
+        url: '/LoginService/User/GetList',
+        method: 'get',
+        params
+    })
+}
+
+//删除用户
 export const removeUser = params => {
     return fetch({
-        url: '/LoginService/User/GetUserList',
+        url: '/LoginService/User/DelUser',
         method: 'get',
         params
     });
 };
 
-export const batchRemoveUser = params => { return axios.get(`${base}/user/batchremove`, { params: params }); };
+//批量删除用户
+export const batchRemoveUser = params => {
+    return fetch({
+        url: '/LoginService/User/BatchDelUser',
+        method: 'get',
+        params
+    });
+};
 
 //编辑用户
-export  function editUser(data) {
+export function editUser(data) {
     return fetch({
         url: '/LoginService/User/EditUser',
         method: 'post',
@@ -43,9 +60,10 @@ export  function editUser(data) {
 
 //新增用户
 export const addUser = params => {
+    var data = params
     return fetch({
         url: '/LoginService/User/AddUser',
         method: 'post',
-        params
+        data
     })
 }
