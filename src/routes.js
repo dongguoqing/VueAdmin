@@ -5,6 +5,7 @@ import Main from './views/Main.vue'
 import Table from './views/nav1/Table.vue'
 import Form from './views/nav1/Form.vue'
 import user from './views/nav1/user.vue'
+import role from './views/nav1/role.vue'
 import Page4 from './views/nav2/Page4.vue'
 import Page5 from './views/nav2/Page5.vue'
 import Page6 from './views/nav3/Page6.vue'
@@ -44,8 +45,9 @@ const routes = [{
     children: [
         { path: '/main', component: Main, name: '主页', hidden: true },
         { path: '/table', component: Table, name: '用户管理' },
+        { path: '/role', component: role, name: '角色管理' },
         { path: '/form', component: Form, name: 'Form' },
-        { path: '/user', component: user, name: '列表' },
+        { path: '/user', component: user, name: '权限管理' },
     ]
 },
 {
