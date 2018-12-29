@@ -23,3 +23,11 @@ export function getDutyList() {
         type: 'get'
     })
 }
+
+//获取所有角色列表
+export function getRoleList(){
+    return fetch({
+        url:"/LoginService/Organize/GetRoleList",
+        type:"get"
+    })
+}
